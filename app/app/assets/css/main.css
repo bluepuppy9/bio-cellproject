@@ -1,0 +1,14 @@
+@import "tailwindcss/preflight";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* DaisyUI will be loaded through Tailwind plugin in tailwind.config.js */
+
+html, body, #__nuxt {
+	height: 100%;
+}
+
+body {
+	background-color: var(--p-50);
+	color: var(--p-900);
+}
