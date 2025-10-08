@@ -41,7 +41,9 @@
         :key="o.id"
         class="btn btn-sm btn-ghost bg-white/80 backdrop-blur-sm hover:bg-white/90 border border-white/30 shadow-md"
         :style="{ borderLeftColor: o.color, borderLeftWidth: '4px' }"
-        @click="selectOrganelle(o)"
+        @pointerdown.stop
+        @pointerup.stop
+        @click.stop="openModal(o)"
       >
         {{ o.name }}
       </button>
@@ -74,6 +76,10 @@ let mouse = new THREE.Vector2();
 let animationId: number | null = null;
 let isDragging = false;
 let hoveredObject: THREE.Object3D | null = null;
+let isPointerDown = false;
+let downX = 0;
+let downY = 0;
+const DRAG_PX_THRESHOLD = 6; // pixels of movement to consider it a drag
 
 const organelles: Organelle[] = [
   {
@@ -335,6 +341,14 @@ onMounted(() => {
       const OrbitControls = oc.OrbitControls;
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
+      // Track drag start/end reliably once controls are available
+      controls.addEventListener("start", () => {
+        isDragging = true;
+      });
+      controls.addEventListener("end", () => {
+        // Small delay so pointerup right after drag doesn't count as a click
+        setTimeout(() => (isDragging = false), 100);
+      });
     } catch (e) {
       console.warn("OrbitControls failed to load", e);
     }
@@ -348,6 +362,15 @@ onMounted(() => {
     const rect = container.value.getBoundingClientRect();
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    // If pointer is down, update dragging state based on movement threshold
+    if (isPointerDown) {
+      const dx = event.clientX - downX;
+      const dy = event.clientY - downY;
+      if (!isDragging && Math.hypot(dx, dy) > DRAG_PX_THRESHOLD) {
+        isDragging = true;
+      }
+    }
 
     // Hover effect
     raycaster.setFromCamera(mouse, camera);
@@ -375,15 +398,23 @@ onMounted(() => {
     }
   }
 
-  function onPointerDown() {
+  function onPointerDown(event: PointerEvent) {
+    isPointerDown = true;
+    downX = event.clientX;
+    downY = event.clientY;
+    // reset drag flag; OrbitControls 'start' will set it if actual drag begins
     isDragging = false;
   }
 
   function onPointerUp(event: PointerEvent) {
-    // Only register click if we weren't dragging
-    if ((!isDragging && !scene) || !camera) return;
-
-    if (!isDragging) {
+    // Pointer is no longer down
+    isPointerDown = false;
+    if (!scene || !camera) return;
+    const dx = event.clientX - downX;
+    const dy = event.clientY - downY;
+    const moved = Math.hypot(dx, dy);
+    // Only treat as click if movement is under threshold and we aren't dragging
+    if (!isDragging && moved <= DRAG_PX_THRESHOLD) {
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
       for (const i of intersects) {
@@ -418,15 +449,7 @@ onMounted(() => {
   }
   animate();
 
-  // Track dragging for controls
-  if (controls) {
-    controls.addEventListener("start", () => {
-      isDragging = true;
-    });
-    controls.addEventListener("end", () => {
-      setTimeout(() => (isDragging = false), 100); // Small delay to prevent click
-    });
-  }
+  // Dragging is tracked via OrbitControls listeners set when controls are created
 
   // cleanup
   onBeforeUnmount(() => {
@@ -442,6 +465,11 @@ onMounted(() => {
 
 function close() {
   selected.value = null;
+}
+
+function openModal(o: Organelle) {
+  // Open the info modal directly without relying on 3D positions or camera movement
+  selected.value = o;
 }
 
 function selectOrganelle(o: Organelle) {
