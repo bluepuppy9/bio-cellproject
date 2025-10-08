@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FEF3C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FCD34D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  
+  <!-- Ribosomes illustration -->
+  <g transform="translate(400,225)">
+    <!-- Free ribosomes -->
+    <g opacity="0.9">
+      <circle cx="-100" cy="-80" r="20" fill="#8B5A2B"/>
+      <circle cx="-95" cy="-85" r="15" fill="#A16207"/>
+      
+      <circle cx="50" cy="-60" r="18" fill="#8B5A2B"/>
+      <circle cx="54" cy="-65" r="13" fill="#A16207"/>
+      
+      <circle cx="-150" cy="40" r="22" fill="#8B5A2B"/>
+      <circle cx="-145" cy="35" r="17" fill="#A16207"/>
+      
+      <circle cx="120" cy="70" r="19" fill="#8B5A2B"/>
+      <circle cx="124" cy="65" r="14" fill="#A16207"/>
+    </g>
+    
+    <!-- Rough ER with attached ribosomes -->
+    <path d="M-200 -20 Q-150 -40 -100 -20 T0 -20 T100 -20 T200 -20" stroke="#D97706" stroke-width="8" fill="none"/>
+    <path d="M-200 20 Q-150 40 -100 20 T0 20 T100 20 T200 20" stroke="#D97706" stroke-width="8" fill="none"/>
+    
+    <!-- Attached ribosomes -->
+    <circle cx="-180" cy="-25" r="12" fill="#8B5A2B"/>
+    <circle cx="-120" cy="-15" r="12" fill="#8B5A2B"/>
+    <circle cx="-60" cy="-25" r="12" fill="#8B5A2B"/>
+    <circle cx="0" cy="-15" r="12" fill="#8B5A2B"/>
+    <circle cx="60" cy="-25" r="12" fill="#8B5A2B"/>
+    <circle cx="120" cy="-15" r="12" fill="#8B5A2B"/>
+    <circle cx="180" cy="-25" r="12" fill="#8B5A2B"/>
+  </g>
+  
+  <text x="50" y="80" font-size="42" font-weight="bold" fill="#92400E">Ribosomes</text>
+  <text x="50" y="130" font-size="18" fill="#78350F">• Protein synthesis factories</text>
+  <text x="50" y="160" font-size="18" fill="#78350F">• Read mRNA instructions</text>
+  <text x="50" y="190" font-size="18" fill="#78350F">• Assemble amino acids into proteins</text>
+  <text x="50" y="220" font-size="18" fill="#78350F">• Found free or on rough ER</text>
+</svg>
