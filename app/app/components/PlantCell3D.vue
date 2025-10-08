@@ -3,25 +3,31 @@
     ref="container"
     class="w-full h-full rounded-lg border border-base-300 overflow-hidden relative"
   >
-    <!-- Fullscreen Modal -->
-    <div
-      v-if="selected"
-      class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
-      @click="close"
-    >
-      <button
-        class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/20 hover:bg-white/30 text-white rounded-full flex items-center justify-center text-center text-2xl font-bold transition-colors"
+    <!-- Fullscreen Modal with Animation -->
+    <Transition name="modal">
+      <div
+        v-if="selected"
+        class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center modal-backdrop"
         @click="close"
       >
-        ×
-      </button>
-      <img
-        :src="selected.slide"
-        :alt="selected.name"
-        class="object-contain"
-        @click.stop
-      />
-    </div>
+        <Transition name="slide" appear>
+          <div v-if="selected" class="modal-content relative">
+            <button
+              class="absolute top-6 right-6 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 text-white rounded-full flex items-center justify-center text-2xl font-bold transition-all duration-300 hover:scale-110"
+              @click="close"
+            >
+              ×
+            </button>
+            <img
+              :src="selected.slide"
+              :alt="selected.name"
+              class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              @click.stop
+            />
+          </div>
+        </Transition>
+      </div>
+    </Transition>
 
     <!-- Organelle quick access -->
     <div
@@ -71,13 +77,13 @@ let hoveredObject: THREE.Object3D | null = null;
 
 const organelles: Organelle[] = [
   {
-    id: "nucleus",
-    name: "Nucleus",
+    id: "cell-wall",
+    name: "Cell Wall",
     pos: [0, 0, 0],
-    color: "#8B5CF6",
-    slide: "/slides/nucleus.png",
+    color: "#A16207",
+    slide: "/slides/cell-wall.png",
     description:
-      "The control center of the cell, containing DNA and controlling all cellular activities. It regulates gene expression and houses the cell's genetic material.",
+      "The rigid outer protective layer unique to plant cells. Provides structural support, protection, and shape to the cell.",
   },
   {
     id: "chloroplast",
@@ -89,22 +95,22 @@ const organelles: Organelle[] = [
       "The powerhouse of photosynthesis! Contains chlorophyll and converts sunlight, carbon dioxide, and water into glucose and oxygen.",
   },
   {
-    id: "vacuole",
-    name: "Vacuole",
-    pos: [-2, -1, -0.5],
-    color: "#3B82F6",
-    slide: "/slides/vacuole.png",
+    id: "cytoplasm",
+    name: "Cytoplasm",
+    pos: [0, 0, 0],
+    color: "#06B6D4",
+    slide: "/slides/cytoplasm.png",
     description:
-      "A large storage compartment that maintains turgor pressure, stores nutrients and waste products, and helps maintain the cell's structural integrity.",
+      "The gel-like substance filling the cell, providing a medium for organelles to move and for cellular processes to occur.",
   },
   {
-    id: "cell-wall",
-    name: "Cell Wall",
-    pos: [0, 0, 0],
-    color: "#A16207",
-    slide: "/slides/cell-wall.png",
+    id: "golgi-apparatus",
+    name: "Golgi Apparatus",
+    pos: [1, -1.5, -1],
+    color: "#F97316",
+    slide: "/slides/golgi-apparatus.png",
     description:
-      "The rigid outer protective layer unique to plant cells. Provides structural support, protection, and shape to the cell.",
+      "The cell's packaging and shipping center. Modifies, packages, and ships proteins received from the endoplasmic reticulum.",
   },
   {
     id: "mitochondria",
@@ -116,13 +122,13 @@ const organelles: Organelle[] = [
       "The cellular powerhouse that produces ATP through cellular respiration. Essential for energy production in all living cells.",
   },
   {
-    id: "golgi-apparatus",
-    name: "Golgi Apparatus",
-    pos: [1, -1.5, -1],
-    color: "#F97316",
-    slide: "/slides/golgi-apparatus.png",
+    id: "nucleus",
+    name: "Nucleus",
+    pos: [0, 0, 0],
+    color: "#8B5CF6",
+    slide: "/slides/nucleus.png",
     description:
-      "The cell's packaging and shipping center. Modifies, packages, and ships proteins received from the endoplasmic reticulum.",
+      "The control center of the cell, containing DNA and controlling all cellular activities. It regulates gene expression and houses the cell's genetic material.",
   },
   {
     id: "plasma-membrane",
@@ -143,13 +149,12 @@ const organelles: Organelle[] = [
       "Protein synthesis factories! These small structures read mRNA and assemble amino acids into proteins according to genetic instructions.",
   },
   {
-    id: "cytoplasm",
-    name: "Cytoplasm",
+    id: "comparison",
+    name: "Comparison",
     pos: [0, 0, 0],
-    color: "#06B6D4",
-    slide: "/slides/cytoplasm.png",
-    description:
-      "The gel-like substance filling the cell, providing a medium for organelles to move and for cellular processes to occur.",
+    color: "#C49102",
+    slide: "/slides/comparison.png",
+    description: "",
   },
 ];
 
@@ -461,5 +466,71 @@ function selectOrganelle(o: Organelle) {
 <style scoped>
 :root {
   --three-canvas-bg: transparent;
+}
+
+/* Modal backdrop animation */
+.modal-enter-active {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-leave-active {
+  animation: fadeOut 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Content slide animation */
+.slide-enter-active {
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-leave-active {
+  animation: slideOut 0.3s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+}
+
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.3));
 }
 </style>
